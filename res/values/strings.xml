@@ -2,4 +2,14 @@
 <resources>
     <string name="hello">Hello World, MainActivity!</string>
     <string name="app_name">Magellan</string>
+    <string name="str_share">Share</string>
+    <string name="str_copy">Copy</string>
+    <string name="str_delete">Delete</string>
+    <string name="str_rename">Rename</string>
+    <string name="str_prop">Details</string>
+    <string name="str_quit">Exit</string>
+    <string name="str_create">New...</string>
+	<string name="str_paste">Paste</string>    
+	<string name="str_file">Blank file</string>
+	<string name="str_folder">Empty folder</string>
 </resources>

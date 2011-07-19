@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/action_create" 
+		android:icon="@drawable/create"
+		android:title="@string/str_create">
+		<menu>
+			<item android:id="@+id/action_file"
+				android:title="@string/str_file" />
+			<item android:id="@+id/action_folder"
+				android:title="@string/str_folder" />
+		</menu>
+	</item>
+	<item android:id="@+id/action_paste"
+		android:icon="@drawable/paste"
+		android:title="@string/str_paste" />
+	<item android:id="@+id/action_quit"
+		android:icon="@drawable/quit"
+		android:title="@string/str_quit" />
+	<item android:id="@+id/action_prop" 
+		android:icon="@drawable/prop"
+		android:title="@string/str_prop" />
+</menu>

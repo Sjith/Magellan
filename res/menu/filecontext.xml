@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/action_share" 
+		android:title="@string/str_share" />
+	<item android:id="@+id/action_copy"
+		android:title="@string/str_copy" />
+	<item android:id="@+id/action_delete"
+		android:title="@string/str_delete" />
+	<item android:id="@+id/action_rename"
+		android:title="@string/str_rename" />
+	<item android:id="@+id/action_prop" 
+		android:title="@string/str_prop" />
+</menu>
