@@ -10,7 +10,6 @@ import com.quasarlab.magellan.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.media.ExifInterface;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.View;
