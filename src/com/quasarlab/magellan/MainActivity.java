@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.quasarlab.magellan.R;
+import com.quasarlab.magellan.CopyOperation;
+import com.quasarlab.magellan.Folder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -40,36 +42,6 @@ public class MainActivity extends Activity
 	private ListView m_listView;
 	String m_currentPath;
 	
-	private boolean contains(File file, String name)
-	{
-		String[] childs = file.list();
-		for(int i = 0; i < childs.length; i++)
-		{
-			if(childs[i].compareTo(name) == 0)
-				return true;
-		}
-		
-		/* not found */
-		return false;
-	}
-
-
-	private Vector<String> m_list(File f, boolean folders)
-	{
-		String[] all = f.list();
-		Vector<String> ret = new Vector<String>();
-
-		for(int i = 0; i < all.length; i++)
-		{
-			String name = all[i];
-			File child = new File(f.getAbsolutePath() + "/" + all[i]);
-			if((child.isDirectory() && folders) || (!child.isDirectory() && !folders))
-				ret.add(name);
-		}
-
-		return ret;
-	}
-
 	private void m_sort(Vector<String> unsorted)
 	{
 		for(int i = 0; i < unsorted.size(); i++)
@@ -93,26 +65,26 @@ public class MainActivity extends Activity
 
 	public void refreshView()
 	{
-		File file = new File(m_currentPath);
+		Folder currentFolder = new Folder(m_currentPath);
 
-		setTitle( (m_currentPath.compareTo("/") == 0) ? "/" : file.getName() );
+		setTitle( (m_currentPath.compareTo("/") == 0) ? "/" : currentFolder.getName() );
 
 		/* sort files and folders separately */
-		Vector<String> files, folders;
-		files = m_list(file, false);
-		folders = m_list(file, true);
+		Vector<String> filesList, foldersList;
+		filesList = currentFolder.list(false); 
+		foldersList = currentFolder.list(true);
 
 		/* sort both alphabetically */
-		m_sort(files);
-		m_sort(folders);
+		m_sort(filesList);
+		m_sort(foldersList);
 
 		/* put them in our item model, folders first */
 		HashMap<String, String> map;
 		ArrayList<HashMap<String, String> > itemList = new ArrayList<HashMap<String,String>>();
 
-		for(int i = 0; i < folders.size(); i++)
+		for(int i = 0; i < foldersList.size(); i++)
 		{
-			String name = folders.get(i);
+			String name = foldersList.get(i);
 
 			map = new HashMap<String,String>();
 			map.put("title", name);
@@ -122,9 +94,9 @@ public class MainActivity extends Activity
 		}
 
 		/* then simple files */
-		for(int i = 0; i < files.size(); i++)
+		for(int i = 0; i < filesList.size(); i++)
 		{
-			String name = files.get(i);
+			String name = filesList.get(i);
 
 			map = new HashMap<String,String>();
 			map.put("title", name);
@@ -249,10 +221,10 @@ public class MainActivity extends Activity
         	{
         		public void onClick(DialogInterface dialog, int which) 
         		{
-        			File file = new File(m_currentPath);
+        			Folder currentFolder = new Folder(m_currentPath);
         			EditText et = (EditText)alertDialogView.findViewById(R.id.EditText1);
         			String fileName = et.getText().toString();
-        			if(contains(file, fileName))
+        			if(currentFolder.contains(fileName))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
         				adb.setTitle("New folder");
@@ -294,10 +266,10 @@ public class MainActivity extends Activity
         	{
         		public void onClick(DialogInterface dialog, int which) 
         		{
-        			File file = new File(m_currentPath);
+        			Folder currentFolder = new Folder(m_currentPath);
         			EditText et = (EditText)alertDialogView.findViewById(R.id.EditText1);
         			String fileName = et.getText().toString();
-        			if(contains(file, fileName))
+        			if(currentFolder.contains(fileName))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
         				adb.setTitle("New file");
@@ -441,244 +413,23 @@ public class MainActivity extends Activity
 	    
 	    refreshView();
 	}
-	
-	public boolean copyFile(String sourcePath, String destPath)
-	{
-		File source = new File(sourcePath);
-		File dest = new File(destPath);
 		
-		String name = source.getName();
-		int i = 1;
-		while(contains(dest,name))
-		{
-			name = name + "." + String.valueOf(i);
-			i++;
-		}
-		
-		if(!source.exists())
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(source.getName());
-			adb.setMessage("The source file does not exists. Aborting.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return false;						
-		}			
-		
-		if(!source.canRead())
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(source.getName());
-			adb.setMessage("The source file could not be read. Aborting.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return false;						
-		}
-		
-		if(!dest.canWrite())
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(dest.getName());
-			adb.setMessage("Impossible to create files in this repository. Check it exists and you have enough permissions on it.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return false;						
-		}
-		
-		
-		File newFile = new File(destPath + "/" + name);
-		try
-		{
-			newFile.createNewFile();
-		}
-		catch(IOException e)
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(newFile.getName());
-			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return false;	
-		}
-		
-		InputStream in;
-		OutputStream out;
-		try
-		{
-			in = new FileInputStream(source);
-			out = new FileOutputStream(newFile);
-		}
-		catch(FileNotFoundException e)
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(newFile.getName());
-			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();   
-			newFile.delete();
-			return false;			
-		}
-
-	    // Transfer bytes from in to out
-	    byte[] buf = new byte[1024];
-	    int len;
-	    
-	    try
-	    {
-	    	while ((len = in.read(buf)) > 0) 
-	    		out.write(buf, 0, len);
-		    in.close();
-		    out.close();
-	    }
-	    catch(IOException e)
-	    {
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(newFile.getName());
-			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();     
-			newFile.delete();
-			return false;	
-	    }
-		
-	    return true;
-	}
-	
-	@SuppressWarnings("unchecked")
-	public void copyDirectory(String sourcePath, String destPath)
-	{
-		Queue< Pair<String,String> > queue = new LinkedList< Pair<String,String> >();
-		queue.add( new Pair(sourcePath, destPath) );
-		
-		while(!queue.isEmpty())
-		{
-			Pair<String,String> p = queue.poll();
-			
-			File source = new File(p.getFirst());
-			File dest = new File(p.getSecond());
-			
-			if(!source.exists() || !source.isDirectory())
-				continue;
-			
-			if(!source.canRead() || !source.canExecute())
-			{
-				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle(source.getName());
-				adb.setMessage("The source directory could not be read. Aborting.");
-				adb.setPositiveButton("Ok", null);
-				adb.show();         
-				return;						
-			}
-			
-			if(!dest.exists())
-			{
-				if(!dest.mkdirs())
-				{
-					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-					adb.setTitle(source.getName());
-					adb.setMessage("The directory " + dest.getName() + " could not be created. Check permissions. Aborting.");
-					adb.setPositiveButton("Ok", null);
-					adb.show();         
-					return;
-				}
-			}
-				
-			String[] files = source.list();
-			for(int i = 0; i < files.length; i++)
-			{
-				String srcName = p.getFirst() + "/" + files[i];
-				String destName = p.getSecond() + "/" + files[i];
-				
-				File file = new File(srcName);
-				if(file.isDirectory())
-					queue.add(new Pair<String,String>(srcName,destName));
-				else
-				{
-					if(!copyFile(srcName, p.getSecond()))
-						return;
-				}
-			}				
-		}
-	}
-	
-	public void copy(String name)
-	{
-		ProgressDialog dialog = new ProgressDialog(MainActivity.this);
-		dialog.setTitle("Copy");
-		dialog.setMessage("Copying files. Please wait.");
-		dialog.setIndeterminate(true);
-		dialog.show();
-				
-		File file = new File(name);
-		if(file.isDirectory())
-		{
-			File dest = new File(m_currentPath);
-			String fname = file.getName();
-			
-			int i = 1;
-			while(contains(dest, fname))
-			{
-				fname = fname + "." + String.valueOf(i);
-				i++;
-			}
-			
-			copyDirectory(name, m_currentPath + "/" + fname);
-		}
-		else
-			copyFile(name, m_currentPath);
-		
-		dialog.dismiss();
-		
-		refreshView();
-	}
-	
-	/*
-	public void paste()
-	{
-		if(m_copied.compareTo("") == 0)
-			return;
-		
-		File file = new File(m_currentPath);
-		File newFile = new File(m_copied);
-		
-		if(contains(file, newFile.getName()))
-		{
-			/* prompt the name of the new file 
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-	        adb.setTitle("Error");
-	        adb.setMessage("A file with that name already exists.");
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-	        return;	        
-		}
-		
-		try 
-		{
-			newFile.createNewFile();
-		} 
-		catch(IOException e) 
-		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle("New file");
-			adb.setMessage("An exception occured. Error : " + e.getMessage());
-			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return;
-		}
-		
-		
-	}
-	*/
-
-	
 	public void details(String path)
 	{
 		File file = new File(path);
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 		adb.setTitle(file.getName());
+		int count = 1;
+		if(file.isDirectory())
+		{
+			Folder folder = new Folder(path);
+			count = folder.recursiveCount();
+		}
 		adb.setMessage("File path : " + file.getAbsolutePath() + "\n" +
-					   "File size : " + file.length() + "\n");
+						"File size : " + file.length() + "\n" + 
+						"Items count : " + count + "\n");
+		
 		adb.setPositiveButton("Ok", null);
 		adb.show();
 	}
@@ -722,7 +473,9 @@ public class MainActivity extends Activity
 			details(clickedFile.getAbsolutePath());
 			return true;
 		case R.id.action_copy:
-			copy(clickedFile.getAbsolutePath());
+			File toCopy[] = {clickedFile};
+			new CopyOperation(MainActivity.this, toCopy).execute(m_currentPath);
+			refreshView();
 			return true;
 		default:
 			return super.onContextItemSelected(item);
