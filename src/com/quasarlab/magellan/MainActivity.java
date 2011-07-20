@@ -1,16 +1,23 @@
 package com.quasarlab.magellan;
 
+import java.util.LinkedList;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Queue;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import com.quasarlab.magellan.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.media.ExifInterface;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.View;
@@ -435,12 +442,197 @@ public class MainActivity extends Activity
 	    refreshView();
 	}
 	
-	/*
-	public void copy(String name)
+	public boolean copyFile(String sourcePath, String destPath)
 	{
-		m_copied = m_currentPath + "/" + name;
+		File source = new File(sourcePath);
+		File dest = new File(destPath);
+		
+		String name = source.getName();
+		int i = 1;
+		while(contains(dest,name))
+		{
+			name = name + "." + String.valueOf(i);
+			i++;
+		}
+		
+		if(!source.exists())
+		{
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(source.getName());
+			adb.setMessage("The source file does not exists. Aborting.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();         
+			return false;						
+		}			
+		
+		if(!source.canRead())
+		{
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(source.getName());
+			adb.setMessage("The source file could not be read. Aborting.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();         
+			return false;						
+		}
+		
+		if(!dest.canWrite())
+		{
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(dest.getName());
+			adb.setMessage("Impossible to create files in this repository. Check it exists and you have enough permissions on it.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();         
+			return false;						
+		}
+		
+		
+		File newFile = new File(destPath + "/" + name);
+		try
+		{
+			newFile.createNewFile();
+		}
+		catch(IOException e)
+		{
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(newFile.getName());
+			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();         
+			return false;	
+		}
+		
+		InputStream in;
+		OutputStream out;
+		try
+		{
+			in = new FileInputStream(source);
+			out = new FileOutputStream(newFile);
+		}
+		catch(FileNotFoundException e)
+		{
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(newFile.getName());
+			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();   
+			newFile.delete();
+			return false;			
+		}
+
+	    // Transfer bytes from in to out
+	    byte[] buf = new byte[1024];
+	    int len;
+	    
+	    try
+	    {
+	    	while ((len = in.read(buf)) > 0) 
+	    		out.write(buf, 0, len);
+		    in.close();
+		    out.close();
+	    }
+	    catch(IOException e)
+	    {
+			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+			adb.setTitle(newFile.getName());
+			adb.setMessage("An error occured while creating the new file : " + e.getMessage() + ". Aborting.");
+			adb.setPositiveButton("Ok", null);
+			adb.show();     
+			newFile.delete();
+			return false;	
+	    }
+		
+	    return true;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public void copyDirectory(String sourcePath, String destPath)
+	{
+		Queue< Pair<String,String> > queue = new LinkedList< Pair<String,String> >();
+		queue.add( new Pair(sourcePath, destPath) );
+		
+		while(!queue.isEmpty())
+		{
+			Pair<String,String> p = queue.poll();
+			
+			File source = new File(p.getFirst());
+			File dest = new File(p.getSecond());
+			
+			if(!source.exists() || !source.isDirectory())
+				continue;
+			
+			if(!source.canRead() || !source.canExecute())
+			{
+				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+				adb.setTitle(source.getName());
+				adb.setMessage("The source directory could not be read. Aborting.");
+				adb.setPositiveButton("Ok", null);
+				adb.show();         
+				return;						
+			}
+			
+			if(!dest.exists())
+			{
+				if(!dest.mkdirs())
+				{
+					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+					adb.setTitle(source.getName());
+					adb.setMessage("The directory " + dest.getName() + " could not be created. Check permissions. Aborting.");
+					adb.setPositiveButton("Ok", null);
+					adb.show();         
+					return;
+				}
+			}
+				
+			String[] files = source.list();
+			for(int i = 0; i < files.length; i++)
+			{
+				String srcName = p.getFirst() + "/" + files[i];
+				String destName = p.getSecond() + "/" + files[i];
+				
+				File file = new File(srcName);
+				if(file.isDirectory())
+					queue.add(new Pair<String,String>(srcName,destName));
+				else
+				{
+					if(!copyFile(srcName, p.getSecond()))
+						return;
+				}
+			}				
+		}
+	}
+	
+	public void copy(String name)
+	{
+		ProgressDialog dialog = new ProgressDialog(MainActivity.this);
+		dialog.setTitle("Copy");
+		dialog.setMessage("Copying files. Please wait.");
+		dialog.setIndeterminate(true);
+		dialog.show();
+				
+		File file = new File(name);
+		if(file.isDirectory())
+		{
+			File dest = new File(m_currentPath);
+			String fname = file.getName();
+			
+			int i = 1;
+			while(contains(dest, fname))
+			{
+				fname = fname + "." + String.valueOf(i);
+				i++;
+			}
+			
+			copyDirectory(name, m_currentPath + "/" + fname);
+		}
+		else
+			copyFile(name, m_currentPath);
+		
+		dialog.dismiss();
+		
+		refreshView();
+	}
+	
+	/*
 	public void paste()
 	{
 		if(m_copied.compareTo("") == 0)
@@ -520,7 +712,7 @@ public class MainActivity extends Activity
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(info.position);
 		File clickedFile = new File(m_currentPath + "/" + map.get("title"));
-
+		
 		switch (item.getItemId()) 
 		{
 		case R.id.action_delete:
@@ -528,6 +720,9 @@ public class MainActivity extends Activity
 			return true;
 		case R.id.action_prop:
 			details(clickedFile.getAbsolutePath());
+			return true;
+		case R.id.action_copy:
+			copy(clickedFile.getAbsolutePath());
 			return true;
 		default:
 			return super.onContextItemSelected(item);
