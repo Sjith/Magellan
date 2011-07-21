@@ -1,11 +1,7 @@
 package com.quasarlab.magellan;
 
 import java.io.File;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Vector;
-
-import android.app.AlertDialog;
 
 public class Folder extends File
 {

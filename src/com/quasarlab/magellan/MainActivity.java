@@ -1,17 +1,10 @@
 package com.quasarlab.magellan;
 
-import java.util.LinkedList;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Queue;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 import com.quasarlab.magellan.R;
 import com.quasarlab.magellan.CopyOperation;
@@ -19,7 +12,6 @@ import com.quasarlab.magellan.Folder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuInflater;
 import android.view.View;
@@ -42,6 +34,22 @@ public class MainActivity extends Activity
 	private ListView m_listView;
 	String m_currentPath;
 	String m_copied;
+	
+	private String m_convert(long size)
+	{
+		String ret;
+		
+		if(size/1000000000 > 0) // superior to 1 GB
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000000))*10) / 10 ) + " GB";  
+		else if(size/1000000 > 0) // superior to 1 MB
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000))*10) / 10 ) + " MB";  
+		else if(size/1000 > 0) // superior to 1KB
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000))*10) / 10 ) + " KB";  
+		else
+			ret = String.valueOf(size) + " Bytes";
+		
+		return ret;
+	}
 	
 	private void m_sort(Vector<String> unsorted)
 	{
@@ -86,10 +94,14 @@ public class MainActivity extends Activity
 		for(int i = 0; i < foldersList.size(); i++)
 		{
 			String name = foldersList.get(i);
+			Folder folder = new Folder(m_currentPath + "/" + name);
 
 			map = new HashMap<String,String>();
 			map.put("title", name);
-			map.put("descr", "Directory");
+			
+			String descr = "Directory, " + folder.count() + " elements";
+			map.put("descr", descr);
+			
 			map.put("img", String.valueOf(R.drawable.folder));
 			itemList.add(map);
 		}
@@ -98,10 +110,14 @@ public class MainActivity extends Activity
 		for(int i = 0; i < filesList.size(); i++)
 		{
 			String name = filesList.get(i);
+			File file = new File(m_currentPath + "/" + name);
 
 			map = new HashMap<String,String>();
 			map.put("title", name);
-			map.put("descr", "File");
+			
+			String descr = "File, " + m_convert(file.length());
+			map.put("descr", descr);
+			
 			map.put("img", String.valueOf(R.drawable.file));
 			itemList.add(map);
 		}		
