@@ -316,10 +316,13 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 			adb.setTitle("OK");
 			adb.setMessage("Copy ended with success.");
 			adb.setPositiveButton("Ok", null);
-			adb.show();         
-			return;
-			
+			adb.show();     
 		}
+		
+		MainActivity activity = (MainActivity) m_context;
+		activity.refreshView();
+	    
+		return;
 	}
 
 }

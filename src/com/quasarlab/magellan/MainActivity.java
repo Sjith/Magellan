@@ -41,6 +41,7 @@ public class MainActivity extends Activity
 
 	private ListView m_listView;
 	String m_currentPath;
+	String m_copied;
 	
 	private void m_sort(Vector<String> unsorted)
 	{
@@ -451,6 +452,20 @@ public class MainActivity extends Activity
 	    case R.id.action_prop:
 	    	details(m_currentPath);
 	    	return true;
+		case R.id.action_paste:
+			if(m_copied.compareTo("") == 0)
+			{
+				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+				adb.setTitle("Exception");
+				adb.setMessage("An exception occured.");
+				adb.setPositiveButton("Ok", null);
+				adb.show(); 
+				return false;
+			}
+			File fileToCopy = new File(m_copied);
+			File toCopy[] = { fileToCopy };
+			new CopyOperation(MainActivity.this, toCopy).execute(m_currentPath);
+			return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
@@ -473,9 +488,7 @@ public class MainActivity extends Activity
 			details(clickedFile.getAbsolutePath());
 			return true;
 		case R.id.action_copy:
-			File toCopy[] = {clickedFile};
-			new CopyOperation(MainActivity.this, toCopy).execute(m_currentPath);
-			refreshView();
+			m_copied = clickedFile.getAbsolutePath();
 			return true;
 		default:
 			return super.onContextItemSelected(item);
