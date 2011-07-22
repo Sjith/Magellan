@@ -409,39 +409,10 @@ public class MainActivity extends Activity
 	    refreshView();
 	}
 
-	private class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
-		protected int count = 1;
-		ProgressDialog dialog;
-		File file;
 
-		protected void onPreExecute() {
-			dialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.mainactivity_dialog_progress_getting_details), true);
-		}
-		protected Void doInBackground(String... args) {
-			assert (args.length == 1);
-			String path = args[0];
-			file = new File(path);
-			if(file.isDirectory())
-			{
-				Folder folder = new Folder(path);
-				count = folder.recursiveCount();
-			}
-			return null;
-		}
-		protected void onPostExecute(Void foo) {
-			try {
-				dialog.dismiss();
-			}
-			catch (IllegalArgumentException e) {
-				// Window has leaked
-			}
-			dialog(file.getName(),
-					String.format(getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), file.length(), count));
-		}
-	}
 	public void details(String path)
 	{
-		new AsyncDetailsDisplayer().execute(path);
+		new AsyncDetailsDisplayer(MainActivity.this).execute(path);
 	}
 	
 	public boolean onOptionsItemSelected(MenuItem item) 
