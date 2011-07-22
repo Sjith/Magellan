@@ -484,13 +484,13 @@ public class MainActivity extends Activity
 	    case R.id.action_folder:
 	    	newFile(true);
 	    	return true;
-	    case R.id.action_quit:
+	    case R.id.mainactivity_menu_quit:
 	        finish();
 	        return true;
-	    case R.id.action_details:
+	    case R.id.mainactivity_menu_details:
 	    	details(m_currentPath);
 	    	return true;
-		case R.id.action_paste:
+		case R.id.mainactivity_menu_paste:
 			if(m_copied.compareTo("") == 0)
 			{
 				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
@@ -519,13 +519,13 @@ public class MainActivity extends Activity
 		
 		switch (item.getItemId()) 
 		{
-		case R.id.action_delete:
+		case R.id.mainactivity_filecontext_delete:
 			delete(clickedFile.getName());
 			return true;
-		case R.id.action_details:
+		case R.id.mainactivity_filecontext_details:
 			details(clickedFile.getAbsolutePath());
 			return true;
-		case R.id.action_copy:
+		case R.id.mainactivity_filecontext_copy:
 			m_copied = clickedFile.getAbsolutePath();
 			return true;
 		default:

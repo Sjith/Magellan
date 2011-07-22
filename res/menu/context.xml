@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/menu_context"
+	<item android:id="@+id/mainactivity_context_copy"
 		android:title="@string/mainactivity_context_copy" />
-	<item android:id="@+id/action_delete"
+	<item android:id="@+id/mainactivity_context_delete"
 		android:title="@string/mainactivity_context_delete" />
-	<item android:id="@+id/action_rename"
+	<item android:id="@+id/mainactivity_context_rename"
 		android:title="@string/mainactivity_context_rename" />
-	<item android:id="@+id/action_details" 
+	<item android:id="@+id/mainactivity_context_detail"
 		android:title="@string/mainactivity_context_details" />
 </menu>

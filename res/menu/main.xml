@@ -10,13 +10,13 @@
 				android:title="@string/mainactivity_menu_create_folder" />
 		</menu>
 	</item>
-	<item android:id="@+id/action_paste"
+	<item android:id="@+id/mainactivity_menu_paste"
 		android:icon="@drawable/paste"
 		android:title="@string/mainactivity_menu_paste" />
-	<item android:id="@+id/action_quit"
+	<item android:id="@+id/mainactivity_menu_quit"
 		android:icon="@drawable/quit"
 		android:title="@string/mainactivity_menu_exit" />
-	<item android:id="@+id/action_details" 
+	<item android:id="@+id/mainactivity_menu_details"
 		android:icon="@drawable/details"
 		android:title="@string/mainactivity_menu_details" />
 </menu>
