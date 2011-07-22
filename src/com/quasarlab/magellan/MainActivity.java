@@ -478,10 +478,10 @@ public class MainActivity extends Activity
 	    // Handle item selection
 	    switch (item.getItemId()) 
 	    {
-	    case R.id.action_file:
+	    case R.id.mainactivity_menu_create_file:
 	    	newFile(false);
 	    	return true;
-	    case R.id.action_folder:
+	    case R.id.mainactivity_menu_create_folder:
 	    	newFile(true);
 	    	return true;
 	    case R.id.mainactivity_menu_quit:

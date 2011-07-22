@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/action_create" 
+	<item android:id="@+id/mainactivity_menu_create"
 		android:icon="@drawable/create"
 		android:title="@string/mainactivity_menu_create">
 		<menu>
-			<item android:id="@+id/action_file"
+			<item android:id="@+id/mainactivity_menu_create_file"
 				android:title="@string/mainactivity_menu_create_file" />
-			<item android:id="@+id/action_folder"
+			<item android:id="@+id/mainactivity_menu_create_folder"
 				android:title="@string/mainactivity_menu_create_folder" />
 		</menu>
 	</item>
