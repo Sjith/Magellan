@@ -42,13 +42,13 @@ public class MainActivity extends Activity
 		String ret;
 		
 		if(size/1000000000 > 0) // superior to 1 GB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000000))*10) / 10 ) + " GB";  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000000))*10) / 10 ) + " " + getResources().getString(R.string.unit_gigabyte);  
 		else if(size/1000000 > 0) // superior to 1 MB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000))*10) / 10 ) + " MB";  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000))*10) / 10 ) + " " + getResources().getString(R.string.unit_megabyte);  
 		else if(size/1000 > 0) // superior to 1KB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000))*10) / 10 ) + " KB";  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000))*10) / 10 ) + " " + getResources().getString(R.string.unit_kilobyte);  
 		else
-			ret = String.valueOf(size) + " Bytes";
+			ret = String.valueOf(size) + " " + getResources().getString(R.string.unit_byte);
 		
 		return ret;
 	}
@@ -101,7 +101,7 @@ public class MainActivity extends Activity
 			map = new HashMap<String,String>();
 			map.put("title", name);
 			
-			String descr = "Directory, " + folder.count() + " elements";
+			String descr = String.format(getResources().getString(R.string.mainactivity_folder_description, folder.count(), folder.count()));
 			map.put("descr", descr);
 			
 			map.put("img", String.valueOf(R.drawable.folder));
@@ -117,7 +117,7 @@ public class MainActivity extends Activity
 			map = new HashMap<String,String>();
 			map.put("title", name);
 			
-			String descr = "File, " + m_convert(file.length());
+			String descr = String.format(getResources().getString(R.string.mainactivity_file_description), m_convert(file.length()));
 			map.put("descr", descr);
 			
 			map.put("img", String.valueOf(R.drawable.file));
@@ -166,7 +166,7 @@ public class MainActivity extends Activity
 					{
 						AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 						adb.setTitle(clickedFile.getName());
-						adb.setMessage("You don't have permissions to explore this directory. It may be a system file.");
+						adb.setMessage(getResources().getString(R.string.error_no_permissions_explore));
 						adb.setPositiveButton("Ok", null);
 						adb.show();
 					}
@@ -215,14 +215,14 @@ public class MainActivity extends Activity
 	{
 		File file = new File(m_currentPath);
 		
-		String type = directory ? "folder" : "file";
+		String type = directory ? getResources().getString(R.string.folder) : getResources().getString(R.string.file);
 		
 		if(!file.canWrite())
 		{
 			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle("New " +type);
-			adb.setMessage("You don't have permissions to create a " + type + " in this directory. It may be a system directory.");
-			adb.setPositiveButton("Ok", null);
+			adb.setTitle(String.format(getResources().getString(R.string.mainactivity_dialog_create_title), type));
+			adb.setMessage(String.format(getResources().getString(R.string.error_no_permissions_create), type));
+			adb.setPositiveButton(getResources().getString(R.string.mainactivity_dialog_create_ok), null);
 			adb.show();
 			return;
 		}
@@ -232,11 +232,11 @@ public class MainActivity extends Activity
         final View alertDialogView = factory.inflate(R.layout.dialogbox, null);
         AlertDialog.Builder adb = new AlertDialog.Builder(this);
         adb.setView(alertDialogView);
-        adb.setTitle("Choose a name for the new " + type + " :");
+        adb.setTitle(String.format(getResources().getString(R.string.mainactivity_dialog_prompt_name_title), type));
         
         if(directory)
         {
-        	adb.setPositiveButton("OK", new DialogInterface.OnClickListener() 
+        	adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), new DialogInterface.OnClickListener() 
         	{
         		public void onClick(DialogInterface dialog, int which) 
         		{
@@ -246,18 +246,18 @@ public class MainActivity extends Activity
         			if(currentFolder.contains(fileName))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle("New folder");
-        				adb.setMessage("A file with that name already exists here.");
-        				adb.setPositiveButton("Ok", null);
+        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
+        				adb.setMessage(getResources().getString(R.string.error_duplicated_name));
+        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         				adb.show();         
         				return;
         			}
         			else if(fileName.contains("/"))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle("New folder");
-        				adb.setMessage("You can't user the character / on a file name.");
-        				adb.setPositiveButton("Ok", null);
+        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
+        				adb.setMessage(String.format(getResources().getString(R.string.error_invalid_character_in_filename), "/"));
+        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         				adb.show();         
         				return;
         			}
@@ -267,9 +267,9 @@ public class MainActivity extends Activity
         				if(!newFile.mkdir()) 
         				{
         					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        					adb.setTitle("New folder");
-        					adb.setMessage("An exception occured.");
-        					adb.setPositiveButton("Ok", null);
+        					adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
+        					adb.setMessage(getResources().getString(R.string.error_unknown));
+        					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         					adb.show();         
         					return;
         				}
@@ -281,7 +281,7 @@ public class MainActivity extends Activity
         }
         else
         {
-        	adb.setPositiveButton("OK", new DialogInterface.OnClickListener() 
+        	adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), new DialogInterface.OnClickListener() 
         	{
         		public void onClick(DialogInterface dialog, int which) 
         		{
@@ -291,18 +291,18 @@ public class MainActivity extends Activity
         			if(currentFolder.contains(fileName))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle("New file");
-        				adb.setMessage("A file with that name already exists here.");
-        				adb.setPositiveButton("Ok", null);
+        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
+        				adb.setMessage(getResources().getString(R.string.error_duplicated_name));
+        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         				adb.show();         
         				return;
         			}
         			else if(fileName.contains("/"))
         			{
         				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle("New file");
-        				adb.setMessage("You can't user the character / on a file name.");
-        				adb.setPositiveButton("Ok", null);
+        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
+        				adb.setMessage(String.format(getResources().getString(R.string.error_invalid_character_in_filename), "/"));
+        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         				adb.show();         
         				return;
         			}
@@ -316,9 +316,9 @@ public class MainActivity extends Activity
         				catch(IOException e) 
         				{
         					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        					adb.setTitle("New file");
-        					adb.setMessage("An exception occured. Error : " + e.getMessage());
-        					adb.setPositiveButton("Ok", null);
+            				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
+        					adb.setMessage(String.format(getResources().getString(R.string.error_unknown_with_message), e.getMessage()));
+        					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
         					adb.show();         
         					return;
         				}
@@ -328,7 +328,7 @@ public class MainActivity extends Activity
         	}); // on click listener
         } // file
         
-        adb.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        adb.setNegativeButton(getResources().getString(R.string.error_dialog_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             	return;
             }
@@ -346,8 +346,8 @@ public class MainActivity extends Activity
 		{
 			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 			adb.setTitle(file.getName());
-			adb.setMessage("You don't have permissions to delete the contents of this folder. It may be a system folder.");
-			adb.setPositiveButton("Ok", null);
+			adb.setMessage(getResources().getString(R.string.error_no_permissions_delete_folder));
+			adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 			adb.show();
 			return false;		
 		}
@@ -362,8 +362,8 @@ public class MainActivity extends Activity
 				{
 					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 					adb.setTitle(child.getName());
-					adb.setMessage("You don't have permissions to delete this file. It may be a system file.");
-					adb.setPositiveButton("Ok", null);
+					adb.setMessage(getResources().getString(R.string.error_no_permissions_delete_folder));
+					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 					adb.show();
 					return false;		
 				}
@@ -378,8 +378,8 @@ public class MainActivity extends Activity
 					{
 						AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 						adb.setTitle(child.getName());
-						adb.setMessage("An error occured and this file could not be deleted");
-						adb.setPositiveButton("Ok", null);
+						adb.setMessage(getResources().getString(R.string.error_unknown));
+						adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 						adb.show();
 						return false;							
 					}
@@ -394,14 +394,14 @@ public class MainActivity extends Activity
 	public void delete(String name)
 	{
 		File file = new File(m_currentPath + "/" + name);
-		String type = file.isDirectory() ? "folder" : "file";
+		String type = file.isDirectory() ? getResources().getString(R.string.folder) : getResources().getString(R.string.file);;
 		
 		if(!file.canWrite())
 		{
 			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 			adb.setTitle(file.getName());
-			adb.setMessage("You don't have permissions to delete this a " + type + ". It may be a system " + type + ".");
-			adb.setPositiveButton("Ok", null);
+			adb.setMessage(String.format(getResources().getString(R.string.error_no_permissions_delete), type));
+			adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 			adb.show();
 			return;			
 		}
@@ -410,9 +410,9 @@ public class MainActivity extends Activity
 			if(!recursiveRmdir(file.getAbsolutePath()))
 			{
 				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle("Exception");
-				adb.setMessage("An error occured, and this folder could not be deleted.");
-				adb.setPositiveButton("Ok", null);
+				adb.setTitle(getResources().getString(R.string.error_dialog_title));
+				adb.setMessage(getResources().getString(R.string.error_unknown));
+				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 				adb.show();         
 				return;					
 			}
@@ -422,9 +422,9 @@ public class MainActivity extends Activity
 			if(!file.delete())
 			{	
 				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle("Exception");
-				adb.setMessage("An exception occured, and this " + type + " could not be deleted.");
-				adb.setPositiveButton("Ok", null);
+				adb.setTitle(getResources().getString(R.string.error_dialog_title));
+				adb.setMessage(getResources().getString(R.string.error_unknown));
+				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 				adb.show();         
 				return;			
 			}
@@ -439,7 +439,7 @@ public class MainActivity extends Activity
 		File file;
 
 		protected void onPreExecute() {
-			dialog = ProgressDialog.show(MainActivity.this, "", "Getting details...", true);
+			dialog = ProgressDialog.show(MainActivity.this, "", getResources().getString(R.string.mainactivity_dialog_progress_getting_details), true);
 		}
 		protected Void doInBackground(String... args) {
 			assert (args.length == 1);
@@ -461,11 +461,10 @@ public class MainActivity extends Activity
 			}
 			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
 			adb.setTitle(file.getName());
-			adb.setMessage("File path : " + file.getAbsolutePath() + "\n" +
-							"File size : " + file.length() + "\n" +
-							"Items count : " + count + "\n");
+			adb.setMessage(String.format(getResources().getString(R.string.mainactivity_dialog_details_info),
+					file.getAbsolutePath(), file.length(), count));
 
-			adb.setPositiveButton("Ok", null);
+			adb.setPositiveButton(getResources().getString(R.string.mainactivity_dialog_details_ok), null);
 			adb.show();
 		}
 	}
@@ -488,16 +487,16 @@ public class MainActivity extends Activity
 	    case R.id.action_quit:
 	        finish();
 	        return true;
-	    case R.id.action_prop:
+	    case R.id.action_details:
 	    	details(m_currentPath);
 	    	return true;
 		case R.id.action_paste:
 			if(m_copied.compareTo("") == 0)
 			{
 				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle("Exception");
-				adb.setMessage("An exception occured.");
-				adb.setPositiveButton("Ok", null);
+				adb.setTitle(getResources().getString(R.string.error_dialog_title));
+				adb.setMessage(getResources().getString(R.string.error_unknown));
+				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
 				adb.show(); 
 				return false;
 			}
@@ -523,7 +522,7 @@ public class MainActivity extends Activity
 		case R.id.action_delete:
 			delete(clickedFile.getName());
 			return true;
-		case R.id.action_prop:
+		case R.id.action_details:
 			details(clickedFile.getAbsolutePath());
 			return true;
 		case R.id.action_copy:

@@ -16,7 +16,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-
 public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boolean>
 {
 	private ProgressDialog m_progressDialog;
@@ -28,7 +27,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 	{
 		m_progressDialog =  new ProgressDialog(m_context);
 		m_progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		m_progressDialog.setTitle("Copying elements...");
+		m_progressDialog.setTitle(m_context.getResources().getString(R.string.copyoperation_copying));
 		m_progressDialog.setCancelable(false);
 		
 		int count = m_toCopy.length;
@@ -92,7 +91,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 					
 					if(!source.canRead() || !source.canExecute())
 					{
-						publishProgress(new Pair<Integer, String>(-1, "The source directory could not be read. Aborting."));
+						publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_permissions_cannot_read_source_folder)));
 						return false;
 					}
 					
@@ -100,7 +99,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 					{
 						if(!dest.mkdirs())
 						{
-							publishProgress(new Pair<Integer, String>(-1, "The directory " + dest.getName() + " could not be created. Check permissions. Aborting."));
+							publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_permissions_cannot_create_destination_folder), dest.getName())));
 							return false;
 						}
 						else
@@ -131,19 +130,19 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 							
 							if(!f.exists())
 							{
-								publishProgress(new Pair<Integer, String>(-1, "The source file does not exists. Aborting."));       
+								publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_source_file_does_not_exist)));       
 								return false;						
 							}			
 							
 							if(!f.canRead())
 							{
-								publishProgress(new Pair<Integer, String>(-1, "The source file could not be read. Aborting."));
+								publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_permissions_cannot_read_source_folder)));
 								return false;						
 							}
 							
 							if(!dest.canWrite())
 							{
-								publishProgress(new Pair<Integer, String>(-1, "Impossible to create files in this repository. Check it exists and you have enough permissions on it."));       
+								publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_permissions_cannot_create_destination_files)));       
 								return false;						
 							}
 							
@@ -154,7 +153,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 							}
 							catch(IOException e)
 							{
-								publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+								publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_cannot_create_destination_file), e.getMessage())));
 								return false;	
 							}
 							
@@ -167,7 +166,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 							}
 							catch(FileNotFoundException e)
 							{
-								publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+								publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_cannot_create_destination_file), e.getMessage())));
 								newFile.delete();
 								return false;			
 							}
@@ -185,7 +184,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 						    }
 						    catch(IOException e)
 						    {
-								publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+								publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_cannot_create_destination_file), e.getMessage())));
 								newFile.delete();
 								return false;		
 						    }
@@ -208,13 +207,13 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 				
 				if(!file.exists())
 				{
-					publishProgress(new Pair<Integer, String>(-1, "The source file does not exists. Aborting."));       
+					publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_source_file_does_not_exist)));       
 					return false;						
 				}			
 				
 				if(!file.canRead())
 				{
-					publishProgress(new Pair<Integer, String>(-1, "The source file could not be read. Aborting."));
+					publishProgress(new Pair<Integer, String>(-1, m_context.getResources().getString(R.string.error_permissions_cannot_read_source_file)));
 					return false;						
 				}
 				
@@ -231,7 +230,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 				}
 				catch(IOException e)
 				{
-					publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+					publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_permissions_cannot_read_source_file), e.getMessage())));
 					return false;	
 				}
 				
@@ -244,7 +243,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 				}
 				catch(FileNotFoundException e)
 				{
-					publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+					publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_permissions_cannot_read_source_file), e.getMessage())));
 					newFile.delete();
 					return false;			
 				}
@@ -262,7 +261,7 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 			    }
 			    catch(IOException e)
 			    {
-					publishProgress(new Pair<Integer, String>(-1, "An error occured while creating the new file : " + e.getMessage() + ". Aborting."));
+					publishProgress(new Pair<Integer, String>(-1, String.format(m_context.getResources().getString(R.string.error_permissions_cannot_read_source_file), e.getMessage())));
 					newFile.delete();
 					return false;		
 			    }
@@ -313,9 +312,9 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 		if(ret)
 		{
 			AlertDialog.Builder adb = new AlertDialog.Builder(m_context);
-			adb.setTitle("OK");
-			adb.setMessage("Copy ended with success.");
-			adb.setPositiveButton("Ok", null);
+			adb.setTitle(m_context.getResources().getString(R.string.copyactivity_success_title));
+			adb.setMessage(m_context.getResources().getString(R.string.copyactivity_success_message));
+			adb.setPositiveButton(m_context.getResources().getString(R.string.copyactivity_success_ok), null);
 			adb.show();     
 		}
 		

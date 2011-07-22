@@ -2,21 +2,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/action_create" 
 		android:icon="@drawable/create"
-		android:title="@string/str_create">
+		android:title="@string/mainactivity_menu_create">
 		<menu>
 			<item android:id="@+id/action_file"
-				android:title="@string/str_file" />
+				android:title="@string/mainactivity_menu_create_file" />
 			<item android:id="@+id/action_folder"
-				android:title="@string/str_folder" />
+				android:title="@string/mainactivity_menu_create_folder" />
 		</menu>
 	</item>
 	<item android:id="@+id/action_paste"
 		android:icon="@drawable/paste"
-		android:title="@string/str_paste" />
+		android:title="@string/mainactivity_menu_paste" />
 	<item android:id="@+id/action_quit"
 		android:icon="@drawable/quit"
-		android:title="@string/str_quit" />
-	<item android:id="@+id/action_prop" 
-		android:icon="@drawable/prop"
-		android:title="@string/str_prop" />
+		android:title="@string/mainactivity_menu_exit" />
+	<item android:id="@+id/action_details" 
+		android:icon="@drawable/details"
+		android:title="@string/mainactivity_menu_details" />
 </menu>
