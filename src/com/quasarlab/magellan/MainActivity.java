@@ -21,8 +21,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.AdapterView.OnItemClickListener;
@@ -33,6 +36,7 @@ import android.content.DialogInterface;
 public class MainActivity extends Activity 
 {
 
+	private LinearLayout m_breadcrumb;
 	private ListView m_listView;
 	String m_currentPath;
 	String m_copied;
@@ -111,6 +115,7 @@ public class MainActivity extends Activity
 		Folder currentFolder = new Folder(m_currentPath);
 
 		setTitle( (m_currentPath.compareTo("/") == 0) ? "/" : currentFolder.getName() );
+		populateBreadcrumb();
 
 		/* sort files and folders separately */
 		Vector<String> filesList, foldersList;
@@ -160,6 +165,45 @@ public class MainActivity extends Activity
 		m_listView.setAdapter(adapter);
 	}
 
+	public void populateBreadcrumb() {
+		int numberOfChilds = m_breadcrumb.getChildCount();
+		for (int i=0; i < numberOfChilds; i++) {
+			m_breadcrumb.removeViewAt(0); // At each iteration, the first element will be removed
+		}
+		Button button;
+
+		class OnBreadcrumbClick implements OnClickListener {
+			MainActivity m_context;
+			String m_path;
+
+			public OnBreadcrumbClick(MainActivity context, String path) {
+				m_context = context;
+				m_path = path;
+			}
+
+			@Override
+			public void onClick(View button) {
+				m_context.setCurrentPath(m_path);
+			}
+		}
+
+		String displayedPath = "/"; // Path that has already been turned into button
+		button = new Button(this);
+		button.setOnClickListener(new OnBreadcrumbClick(this, "/"));
+		button.setText("/");
+		m_breadcrumb.addView(button);
+		for (String folder : m_currentPath.split("/")) {
+			if (folder.length() == 0) {
+				continue;
+			}
+			displayedPath += folder + "/";
+			button = new Button(this);
+			button.setOnClickListener(new OnBreadcrumbClick(this, displayedPath));
+			button.setText(folder);
+			m_breadcrumb.addView(button);
+		}
+	}
+
 	@Override
 	public void onBackPressed()
 	{
@@ -174,11 +218,13 @@ public class MainActivity extends Activity
 	public void onCreate(Bundle savedInstanceState) 
 	{
 		super.onCreate(savedInstanceState);
-		m_listView = new ListView(this);
-		setContentView(m_listView);
+		setContentView(R.layout.main);
+		m_listView = (ListView) findViewById(R.id.main_elements_list);
 		registerForContextMenu(m_listView);
+		m_breadcrumb = (LinearLayout) findViewById(R.id.main_breadcrumb);
 
-		setCurrentPath("/sdcard");			
+		setCurrentPath("/sdcard");
+		populateBreadcrumb();
 
 		m_listView.setOnItemClickListener(new OnItemClickListener() 
 		{
@@ -205,7 +251,7 @@ public class MainActivity extends Activity
 
 				}
 			}
-		});							
+		});
 	}
 	
 	@SuppressWarnings("unchecked")
