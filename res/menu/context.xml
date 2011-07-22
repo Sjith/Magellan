@@ -6,6 +6,6 @@
 		android:title="@string/mainactivity_context_delete" />
 	<item android:id="@+id/mainactivity_context_rename"
 		android:title="@string/mainactivity_context_rename" />
-	<item android:id="@+id/mainactivity_context_detail"
+	<item android:id="@+id/mainactivity_context_details"
 		android:title="@string/mainactivity_context_details" />
 </menu>

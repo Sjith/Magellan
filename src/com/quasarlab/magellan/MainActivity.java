@@ -68,6 +68,38 @@ public class MainActivity extends Activity
 		}
 	}
 
+	private void dialog(String title, String message) {
+		AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
+		adb.setTitle(title);
+		adb.setMessage(message);
+		adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
+		adb.show();
+	}
+	private void dialog(String title, int message) {
+		dialog(title, getResources().getString(message));
+	}
+	private void dialog(int title, String message) {
+		dialog(getResources().getString(title), message);
+	}
+	private void dialog(int title, int message) {
+		dialog(getResources().getString(title), getResources().getString(message));
+	}
+	private void dialog(Pair<Integer, String> title, int message) {
+		dialog(String.format(getResources().getString(title.getFirst()), title.getSecond()), getResources().getString(message));
+	}
+	private void dialog(int title , Pair<Integer, String> message) {
+		dialog(getResources().getString(title), String.format(getResources().getString(message.getFirst()), message.getSecond()));
+	}
+	private void dialog(Pair<Integer, String>title , Pair<Integer, String> message) {
+		dialog(String.format(getResources().getString(title.getFirst()), title.getSecond()), String.format(getResources().getString(message.getFirst()), message.getSecond()));
+	}
+	private void dialog(Pair<Integer, String> title, String message) {
+		dialog(String.format(getResources().getString(title.getFirst()), title.getSecond()), message);
+	}
+	private void dialog(String title , Pair<Integer, String> message) {
+		dialog(title, String.format(getResources().getString(message.getFirst()), message.getSecond()));
+	}
+
 	public void setCurrentPath(String path) 
 	{
 		m_currentPath = path;
@@ -164,11 +196,7 @@ public class MainActivity extends Activity
 					}
 					else
 					{
-						AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-						adb.setTitle(clickedFile.getName());
-						adb.setMessage(getResources().getString(R.string.error_no_permissions_explore));
-						adb.setPositiveButton("Ok", null);
-						adb.show();
+						dialog(clickedFile.getName(), R.string.error_no_permissions_explore);
 					}
 				}
 				else
@@ -219,11 +247,7 @@ public class MainActivity extends Activity
 		
 		if(!file.canWrite())
 		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(String.format(getResources().getString(R.string.mainactivity_dialog_create_title), type));
-			adb.setMessage(String.format(getResources().getString(R.string.error_no_permissions_create), type));
-			adb.setPositiveButton(getResources().getString(R.string.mainactivity_dialog_create_ok), null);
-			adb.show();
+			dialog(R.string.error_dialog_title, new Pair<Integer, String>(R.string.error_no_permissions_create, type));
 			return;
 		}
 		
@@ -245,20 +269,12 @@ public class MainActivity extends Activity
         			String fileName = et.getText().toString();
         			if(currentFolder.contains(fileName))
         			{
-        				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
-        				adb.setMessage(getResources().getString(R.string.error_duplicated_name));
-        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        				adb.show();         
+        				dialog(R.string.error_dialog_title, R.string.error_duplicated_name);
         				return;
         			}
         			else if(fileName.contains("/"))
         			{
-        				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
-        				adb.setMessage(String.format(getResources().getString(R.string.error_invalid_character_in_filename), "/"));
-        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        				adb.show();         
+        				dialog(R.string.error_dialog_title, new Pair<Integer, String>(R.string.error_invalid_character_in_filename, "/"));
         				return;
         			}
         			else
@@ -266,11 +282,7 @@ public class MainActivity extends Activity
         				File newFile = new File(m_currentPath + "/" + fileName);
         				if(!newFile.mkdir()) 
         				{
-        					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        					adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_folder_title));
-        					adb.setMessage(getResources().getString(R.string.error_unknown));
-        					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        					adb.show();         
+        					dialog(R.string.mainactivity_dialog_create_folder_title, R.string.error_unknown);
         					return;
         				}
         				refreshView();
@@ -290,20 +302,12 @@ public class MainActivity extends Activity
         			String fileName = et.getText().toString();
         			if(currentFolder.contains(fileName))
         			{
-        				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
-        				adb.setMessage(getResources().getString(R.string.error_duplicated_name));
-        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        				adb.show();         
+        				dialog(R.string.error_dialog_title, R.string.error_duplicated_name);
         				return;
         			}
         			else if(fileName.contains("/"))
         			{
-        				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-        				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
-        				adb.setMessage(String.format(getResources().getString(R.string.error_invalid_character_in_filename), "/"));
-        				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        				adb.show();         
+        				dialog(R.string.error_dialog_title, new Pair<Integer, String>(R.string.error_invalid_character_in_filename, "/"));
         				return;
         			}
         			else
@@ -315,11 +319,7 @@ public class MainActivity extends Activity
         				} 
         				catch(IOException e) 
         				{
-        					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-            				adb.setTitle(getResources().getString(R.string.mainactivity_dialog_create_file_title));
-        					adb.setMessage(String.format(getResources().getString(R.string.error_unknown_with_message), e.getMessage()));
-        					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-        					adb.show();         
+        					dialog(R.string.error_dialog_title, new Pair<Integer, String>(R.string.error_unknown_with_message, e.getMessage()));
         					return;
         				}
         				refreshView();
@@ -344,11 +344,7 @@ public class MainActivity extends Activity
 		
 		if(!file.canExecute() || !file.canRead())
 		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(file.getName());
-			adb.setMessage(getResources().getString(R.string.error_no_permissions_delete_folder));
-			adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-			adb.show();
+			dialog(file.getName(), R.string.error_no_permissions_delete_folder);
 			return false;		
 		}
 		else
@@ -360,11 +356,7 @@ public class MainActivity extends Activity
 				File child = new File(absPath + "/" + childs[i]);
 				if(!child.canWrite())
 				{
-					AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-					adb.setTitle(child.getName());
-					adb.setMessage(getResources().getString(R.string.error_no_permissions_delete_folder));
-					adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-					adb.show();
+					dialog(child.getName(), R.string.error_no_permissions_delete_folder);
 					return false;		
 				}
 				if(child.isDirectory())
@@ -376,11 +368,7 @@ public class MainActivity extends Activity
 				{
 					if(!child.delete())
 					{
-						AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-						adb.setTitle(child.getName());
-						adb.setMessage(getResources().getString(R.string.error_unknown));
-						adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-						adb.show();
+						dialog(child.getName(), R.string.error_unknown);
 						return false;							
 					}
 				}		
@@ -398,22 +386,14 @@ public class MainActivity extends Activity
 		
 		if(!file.canWrite())
 		{
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(file.getName());
-			adb.setMessage(String.format(getResources().getString(R.string.error_no_permissions_delete), type));
-			adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-			adb.show();
+			dialog(file.getName(), new Pair<Integer, String>(R.string.error_no_permissions_delete, type));
 			return;			
 		}
 		if(file.isDirectory())
 		{
 			if(!recursiveRmdir(file.getAbsolutePath()))
 			{
-				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle(getResources().getString(R.string.error_dialog_title));
-				adb.setMessage(getResources().getString(R.string.error_unknown));
-				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-				adb.show();         
+				dialog(R.string.error_dialog_title, R.string.error_unknown);
 				return;					
 			}
 		}
@@ -421,11 +401,7 @@ public class MainActivity extends Activity
 		{
 			if(!file.delete())
 			{	
-				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle(getResources().getString(R.string.error_dialog_title));
-				adb.setMessage(getResources().getString(R.string.error_unknown));
-				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-				adb.show();         
+				dialog(R.string.error_dialog_title, R.string.error_unknown);
 				return;			
 			}
 		}
@@ -459,13 +435,8 @@ public class MainActivity extends Activity
 			catch (IllegalArgumentException e) {
 				// Window has leaked
 			}
-			AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-			adb.setTitle(file.getName());
-			adb.setMessage(String.format(getResources().getString(R.string.mainactivity_dialog_details_info),
-					file.getAbsolutePath(), file.length(), count));
-
-			adb.setPositiveButton(getResources().getString(R.string.mainactivity_dialog_details_ok), null);
-			adb.show();
+			dialog(file.getName(),
+					String.format(getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), file.length(), count));
 		}
 	}
 	public void details(String path)
@@ -493,11 +464,7 @@ public class MainActivity extends Activity
 		case R.id.mainactivity_menu_paste:
 			if(m_copied.compareTo("") == 0)
 			{
-				AlertDialog.Builder adb = new AlertDialog.Builder(MainActivity.this);
-				adb.setTitle(getResources().getString(R.string.error_dialog_title));
-				adb.setMessage(getResources().getString(R.string.error_unknown));
-				adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), null);
-				adb.show(); 
+				dialog(R.string.error_dialog_title, R.string.error_unknown);
 				return false;
 			}
 			File fileToCopy = new File(m_copied);
@@ -520,12 +487,15 @@ public class MainActivity extends Activity
 		switch (item.getItemId()) 
 		{
 		case R.id.mainactivity_filecontext_delete:
+		case R.id.mainactivity_context_delete:
 			delete(clickedFile.getName());
 			return true;
 		case R.id.mainactivity_filecontext_details:
+		case R.id.mainactivity_context_details:
 			details(clickedFile.getAbsolutePath());
 			return true;
 		case R.id.mainactivity_filecontext_copy:
+		case R.id.mainactivity_context_copy:
 			m_copied = clickedFile.getAbsolutePath();
 			return true;
 		default:
