@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 
 public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 	protected int count = 1;
+	protected long size = 0;
 	ProgressDialog dialog;
 	Context m_context;
 	File file;
@@ -29,7 +30,10 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 		{
 			Folder folder = new Folder(path);
 			count = folder.recursiveCount();
+			size = folder.recursiveSize();
 		}
+		else
+			size = file.length();
 		return null;
 	}
 	protected void onPostExecute(Void foo) {
@@ -39,9 +43,12 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 		catch (IllegalArgumentException e) {
 			// Window has leaked
 		}
+		
+		MainActivity act = (MainActivity) m_context;
+		
 		AlertDialog.Builder adb = new AlertDialog.Builder(m_context);
 		adb.setTitle(file.getName());
-		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), file.length(), count));
+		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), act.convert(size), count));
 		adb.setPositiveButton(m_context.getResources().getString(R.string.error_dialog_ok), null);
 		adb.show();
 	}

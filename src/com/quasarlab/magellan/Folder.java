@@ -69,5 +69,28 @@ public class Folder extends File
 		
 		return count;
 	}
+	
+	public long recursiveSize()
+	{
+		long size = 0;
+		
+		if(!this.canRead() || !this.canExecute())
+			return size;
+
+		Vector<String> subFolders = this.list(true);
+		for(int i = 0; i < subFolders.size(); i++)
+		{
+			Folder subFolder = new Folder(this.getAbsolutePath() + "/" + subFolders.get(i));
+			size += (subFolder.recursiveSize());
+		}
+		Vector<String> subFiles = this.list(false);
+		for(int i = 0; i < subFiles.size(); i++)
+		{
+			File subFile = new File(this.getAbsolutePath() + "/" + subFiles.get(i));
+			size += subFile.length();
+		}
+		
+		return size;
+	}
 
 }

@@ -42,7 +42,7 @@ public class MainActivity extends Activity
 	String m_copied;
 	String m_clickedFile;
 	
-	private String m_convert(long size)
+	public String convert(long size)
 	{
 		String ret;
 		
@@ -155,7 +155,7 @@ public class MainActivity extends Activity
 			map = new HashMap<String,String>();
 			map.put("title", name);
 			
-			String descr = String.format(getResources().getString(R.string.mainactivity_file_description), m_convert(file.length()));
+			String descr = String.format(getResources().getString(R.string.mainactivity_file_description), convert(file.length()));
 			map.put("descr", descr);
 			
 			map.put("img", String.valueOf(R.drawable.file));
