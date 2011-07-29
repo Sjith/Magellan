@@ -307,8 +307,13 @@ public class CopyOperation extends AsyncTask<String, Pair<Integer,String>, Boole
 	
 	@Override
 	protected void onPostExecute(Boolean ret)
-	{
-		m_progressDialog.dismiss();	
+	{	
+		try 
+		{
+			m_progressDialog.dismiss();
+		}
+		catch(IllegalArgumentException e) {} // window has leaked
+		
 		if(ret)
 		{
 			AlertDialog.Builder adb = new AlertDialog.Builder(m_context);

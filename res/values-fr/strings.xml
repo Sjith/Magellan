@@ -31,6 +31,7 @@
 	<string name="mainactivity_dialog_create_file_title">Nouveau fichier</string>
 	<string name="folder">répertoire</string>
 	<string name="file">fichier</string>
+	<string name="error_name_null">Le nom ne peut pas être vide.</string>
 	<string name="error_duplicated_name">Un fichier avec ce nom existe déjà ici.</string>
 	<string name="error_unknown_with_message">Erreur inconnue : %s</string>
 	<string name="error_no_permissions_delete_folder">Vous n\'avez pas les permissions pour supprimer le contenu de ce répertoire. Il s\'agit probablement d\'un répertoire système.</string>
@@ -50,4 +51,6 @@
 	<string name="error_permissions_cannot_read_source_file">Le fichier source ne peut être lu. Abandon.</string>
 	<string name="copyactivity_success_ok">Ok</string>
 	<string name="copyactivity_success_message">Copie effectuée avec succès.</string>
+	<string name="error_permissions_cannot_write_parent_dir">Vous n\'avez pas les permissions pour renommer ce fichier.</string>
+	<string name="dialog_prompt_rename_title">Choisissez un nouveau nom :</string>
 </resources>

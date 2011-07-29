@@ -31,6 +31,7 @@
 	<string name="mainactivity_dialog_create_file_title">New file</string>
 	<string name="folder">folder</string>
 	<string name="file">file</string>
+	<string name="error_name_null">The name can\'t be empty.</string>
 	<string name="error_duplicated_name">A file with that name already exists here.</string>
 	<string name="error_unknown_with_message">Unknown error: %s</string>
 	<string name="error_no_permissions_delete_folder">You don\'t have permissions to delete the contents of this folder. It may be a system folder.</string>
@@ -50,4 +51,7 @@
 	<string name="error_permissions_cannot_read_source_file">The source file could not be read. Aborting.</string>
 	<string name="copyactivity_success_ok">Ok</string>
 	<string name="copyactivity_success_message">Copy ended with success.</string>
+	<string name="error_permissions_cannot_write_parent_dir">You don\'t have write permissions to this directory.</string>
+	<string name="error_permissions_cannot_rename_file">You don\'t have permissions to rename this file.</string>
+	<string name="dialog_prompt_rename_title">Choose a new name :</string>
 </resources>

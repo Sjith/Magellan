@@ -40,6 +40,7 @@ public class MainActivity extends Activity
 	private ListView m_listView;
 	String m_currentPath;
 	String m_copied;
+	String m_clickedFile;
 	
 	private String m_convert(long size)
 	{
@@ -181,7 +182,6 @@ public class MainActivity extends Activity
 				m_path = path;
 			}
 
-			@Override
 			public void onClick(View button) {
 				m_context.setCurrentPath(m_path);
 			}
@@ -500,6 +500,7 @@ public class MainActivity extends Activity
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(info.position);
 		File clickedFile = new File(m_currentPath + "/" + map.get("title"));
+		m_clickedFile = clickedFile.getAbsolutePath();
 		
 		switch (item.getItemId()) 
 		{
@@ -514,6 +515,26 @@ public class MainActivity extends Activity
 		case R.id.mainactivity_filecontext_copy:
 		case R.id.mainactivity_context_copy:
 			m_copied = clickedFile.getAbsolutePath();
+			return true;
+		case R.id.mainactivity_filecontext_rename:
+		case R.id.mainactivity_context_rename:
+			/* prompt the name of the new file (must be done in UI thread) */
+	        LayoutInflater factory = LayoutInflater.from(this);
+	        final View alertDialogView = factory.inflate(R.layout.dialogbox, null);
+	        AlertDialog.Builder adb = new AlertDialog.Builder(this);
+	        adb.setView(alertDialogView);
+	        adb.setTitle(String.format(getResources().getString(R.string.dialog_prompt_rename_title)));
+	    	adb.setPositiveButton(getResources().getString(R.string.error_dialog_ok), new DialogInterface.OnClickListener() 
+	    	{
+	    		public void onClick(DialogInterface dialog, int which) 
+	    		{
+	    			EditText et = (EditText)alertDialogView.findViewById(R.id.EditText1);
+	    			String newName = et.getText().toString();
+	    			new RenameOperation(MainActivity.this, MainActivity.this.m_clickedFile, newName).execute();
+	    		}
+	    	});
+	    	adb.show();
+	    	
 			return true;
 		default:
 			return super.onContextItemSelected(item);
