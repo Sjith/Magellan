@@ -1,5 +1,6 @@
 package com.quasarlab.magellan;
 
+import java.util.List;
 import java.util.Vector;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import com.quasarlab.magellan.R;
 import com.quasarlab.magellan.CopyOperation;
 import com.quasarlab.magellan.Folder;
+import com.quasarlab.magellan.MagellanFile;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -33,6 +35,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -46,18 +49,18 @@ public class MainActivity extends Activity
 	String m_copied;
 	String m_clickedFile;
 	
-	public String convert(long size)
+	static public String convert(long size, Context c)
 	{
 		String ret;
 		
 		if(size/1000000000 > 0) // superior to 1 GB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000000))*10) / 10 ) + " " + getResources().getString(R.string.unit_gigabyte);  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000000))*10) / 10 ) + " " + c.getResources().getString(R.string.unit_gigabyte);  
 		else if(size/1000000 > 0) // superior to 1 MB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000))*10) / 10 ) + " " + getResources().getString(R.string.unit_megabyte);  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000000))*10) / 10 ) + " " + c.getResources().getString(R.string.unit_megabyte);  
 		else if(size/1000 > 0) // superior to 1KB
-			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000))*10) / 10 ) + " " + getResources().getString(R.string.unit_kilobyte);  
+			ret = String.valueOf((double) Math.round((((double)size) / ((double)1000))*10) / 10 ) + " " + c.getResources().getString(R.string.unit_kilobyte);  
 		else
-			ret = String.valueOf(size) + " " + getResources().getString(R.string.unit_byte);
+			ret = String.valueOf(size) + " " + c.getResources().getString(R.string.unit_byte);
 		
 		return ret;
 	}
@@ -134,40 +137,47 @@ public class MainActivity extends Activity
 		/* put them in our item model, folders first */
 		HashMap<String, String> map;
 		ArrayList<HashMap<String, String> > itemList = new ArrayList<HashMap<String,String>>();
-
+		
+		ListItemAdapter ad = new ListItemAdapter(this);
+		List<MagellanFile> list = new ArrayList<MagellanFile>();
 		for(int i = 0; i < foldersList.size(); i++)
 		{
 			String name = foldersList.get(i);
-			Folder folder = new Folder(m_currentPath + "/" + name);
+//			Folder folder = new Folder(m_currentPath + "/" + name);
+//
+//			map = new HashMap<String,String>();
+//			map.put("title", name);
+//			
+//			String descr = String.format(getResources().getString(R.string.mainactivity_folder_description, folder.count(), folder.count()));
+//			map.put("descr", descr);
+//			
+//			map.put("img", String.valueOf(R.drawable.folder));
+//			itemList.add(map);
+			
 
-			map = new HashMap<String,String>();
-			map.put("title", name);
-			
-			String descr = String.format(getResources().getString(R.string.mainactivity_folder_description, folder.count(), folder.count()));
-			map.put("descr", descr);
-			
-			map.put("img", String.valueOf(R.drawable.folder));
-			itemList.add(map);
+			MagellanFile f = new MagellanFile(m_currentPath + "/" + name);
+			ad.addItem(f);
 		}
 
 		/* then simple files */
 		for(int i = 0; i < filesList.size(); i++)
 		{
 			String name = filesList.get(i);
-			File file = new File(m_currentPath + "/" + name);
-			
-			map = new HashMap<String,String>();
-			map.put("title", name);
-			
-			String descr = String.format(getResources().getString(R.string.mainactivity_file_description), convert(file.length()));
-			map.put("descr", descr);
-			
-			map.put("img", String.valueOf(R.drawable.file));
-			itemList.add(map);
+//			File file = new File(m_currentPath + "/" + name);
+//			
+//			map = new HashMap<String,String>();
+//			map.put("title", name);
+//			
+//			String descr = String.format(getResources().getString(R.string.mainactivity_file_description), convert(file.length(), this));
+//			map.put("descr", descr);
+//			
+//			map.put("img", String.valueOf(R.drawable.file));
+//			itemList.add(map);
+			MagellanFile f = new MagellanFile(m_currentPath + "/" + name);
+			ad.addItem(f);
 		}		
 
-		SimpleAdapter adapter = new SimpleAdapter(this.getBaseContext(), itemList, R.layout.item, new String[] {"img", "title", "descr"}, new int[] {R.id.img, R.id.title, R.id.descr});
-		m_listView.setAdapter(adapter);
+		m_listView.setAdapter(ad);
 	}
 
 	public void populateBreadcrumb() {
@@ -235,8 +245,7 @@ public class MainActivity extends Activity
 			@SuppressWarnings("unchecked")
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) 
 			{ 
-				HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(position);
-				MagellanFile clickedFile = new MagellanFile(m_currentPath + "/" + map.get("title"));
+				MagellanFile clickedFile = (MagellanFile) m_listView.getItemAtPosition(position);
 				if(clickedFile.isDirectory())
 				{
 					// do we have permissions to explore this directory ?
@@ -277,8 +286,7 @@ public class MainActivity extends Activity
 		int position = ((AdapterContextMenuInfo)menuInfo).position;
 		
 		/* did the user clicked on a directory or a file ? get the file clicked */
-		HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(position);
-		File clickedFile = new File(m_currentPath + "/" + map.get("title"));
+		MagellanFile clickedFile = (MagellanFile) m_listView.getItemAtPosition(position);
 		menu.setHeaderTitle(clickedFile.getName());
 		
 		/* use the appropriate menu : simple files have a share action */
@@ -510,8 +518,7 @@ public class MainActivity extends Activity
 	public boolean onContextItemSelected(MenuItem item) 
 	{
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(info.position);
-		File clickedFile = new File(m_currentPath + "/" + map.get("title"));
+		File clickedFile = (MagellanFile) m_listView.getItemAtPosition(info.position);
 		m_clickedFile = clickedFile.getAbsolutePath();
 		
 		switch (item.getItemId()) 

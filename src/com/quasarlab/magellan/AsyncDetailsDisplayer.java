@@ -49,12 +49,10 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 		catch (IllegalArgumentException e) {
 			// Window has leaked
 		}
-		
-		MainActivity act = (MainActivity) m_context;
-		
+				
 		AlertDialog.Builder adb = new AlertDialog.Builder(m_context);
 		adb.setTitle(file.getName());
-		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), act.convert(size), count, type));
+		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), MainActivity.convert(size, m_context), count, type));
 		adb.setPositiveButton(m_context.getResources().getString(R.string.error_dialog_ok), null);
 		adb.show();
 	}
