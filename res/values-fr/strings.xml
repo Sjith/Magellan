@@ -39,7 +39,7 @@
 	<string name="error_no_permissions_delete">Vous n\'avez pas les permissions pour supprimer ce %1$s. Il s\'agit probablement d\'un %1$s système.</string>
 	<string name="error_dialog_title">Erreur</string>
 	<string name="mainactivity_dialog_progress_getting_details">Acquisition des détails...</string>
-	<string name="mainactivity_dialog_details_info">Chemin du fichier : %1$s\nTaille du fichier: %2$s\nNombre d\'éléments: %3$s\n</string>
+	<string name="mainactivity_dialog_details_info">Chemin du fichier : %1$s\nTaille du fichier: %2$s\nNombre d\'éléments: %3$s\nType Mime: %4$s\n</string>
 	<string name="mainactivity_dialog_details_ok">Ok</string>
 	<string name="copyoperation_copying">Copie des éléments...</string>
 	<string name="error_permissions_cannot_read_source_folder">Le répertoire source ne peut être lu. Abandon.</string>
@@ -53,4 +53,5 @@
 	<string name="copyactivity_success_message">Copie effectuée avec succès.</string>
 	<string name="error_permissions_cannot_write_parent_dir">Vous n\'avez pas les permissions pour renommer ce fichier.</string>
 	<string name="dialog_prompt_rename_title">Choisissez un nouveau nom :</string>
+	<string name="error_activity_not_found">Erreur: Pas d\'application trouvée pour ce fichier.</string>
 </resources>

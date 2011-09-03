@@ -12,20 +12,25 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 	protected long size = 0;
 	ProgressDialog dialog;
 	Context m_context;
-	File file;
+	MagellanFile file;
+	String type;
 	
 	public AsyncDetailsDisplayer(Context context)
 	{
 		m_context = context;
 	}
 
-	protected void onPreExecute() {
+	protected void onPreExecute() 
+	{
 		dialog = ProgressDialog.show(m_context, "", m_context.getResources().getString(R.string.mainactivity_dialog_progress_getting_details), true);
 	}
-	protected Void doInBackground(String... args) {
+	
+	protected Void doInBackground(String... args) 
+	{
 		assert (args.length == 1);
 		String path = args[0];
-		file = new File(path);
+		file = new MagellanFile(path);
+		type = file.mimeType();
 		if(file.isDirectory())
 		{
 			Folder folder = new Folder(path);
@@ -36,6 +41,7 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 			size = file.length();
 		return null;
 	}
+	
 	protected void onPostExecute(Void foo) {
 		try {
 			dialog.dismiss();
@@ -48,7 +54,7 @@ public class AsyncDetailsDisplayer extends AsyncTask<String, Void, Void> {
 		
 		AlertDialog.Builder adb = new AlertDialog.Builder(m_context);
 		adb.setTitle(file.getName());
-		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), act.convert(size), count));
+		adb.setMessage(String.format(m_context.getResources().getString(R.string.mainactivity_dialog_details_info), file.getAbsolutePath(), act.convert(size), count, type));
 		adb.setPositiveButton(m_context.getResources().getString(R.string.error_dialog_ok), null);
 		adb.show();
 	}

@@ -28,10 +28,14 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.EditText;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 
 public class MainActivity extends Activity 
 {
@@ -151,7 +155,7 @@ public class MainActivity extends Activity
 		{
 			String name = filesList.get(i);
 			File file = new File(m_currentPath + "/" + name);
-
+			
 			map = new HashMap<String,String>();
 			map.put("title", name);
 			
@@ -232,7 +236,7 @@ public class MainActivity extends Activity
 			public void onItemClick(AdapterView<?> a, View v, int position, long id) 
 			{ 
 				HashMap<String,String> map = (HashMap<String,String>) m_listView.getItemAtPosition(position);
-				File clickedFile = new File(m_currentPath + "/" + map.get("title"));
+				MagellanFile clickedFile = new MagellanFile(m_currentPath + "/" + map.get("title"));
 				if(clickedFile.isDirectory())
 				{
 					// do we have permissions to explore this directory ?
@@ -247,8 +251,16 @@ public class MainActivity extends Activity
 				}
 				else
 				{
-					// open the file 
-
+					Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+					Uri uri = Uri.fromFile(clickedFile);
+					intent.setDataAndType(uri, clickedFile.mimeType());
+					
+					try {
+						startActivity(intent);
+					}
+					catch(ActivityNotFoundException e) {
+						Toast.makeText(MainActivity.this, R.string.error_activity_not_found, Toast.LENGTH_SHORT).show();
+					}
 				}
 			}
 		});

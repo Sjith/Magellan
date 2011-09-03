@@ -39,7 +39,7 @@
 	<string name="error_no_permissions_delete">You don\'t have permissions to delete this %1$s. It may be a system %1$s.</string>
 	<string name="error_dialog_title">Error</string>
 	<string name="mainactivity_dialog_progress_getting_details">Getting details...</string>
-	<string name="mainactivity_dialog_details_info">File path: %1$s\nFile size: %2$s\nItems count: %3$s\n</string>
+	<string name="mainactivity_dialog_details_info">File path: %1$s\nFile size: %2$s\nItems count: %3$s\nMime type: %4$s\n</string>
 	<string name="mainactivity_dialog_details_ok">Ok</string>
 	<string name="copyoperation_copying">Copying elements...</string>
 	<string name="error_permissions_cannot_read_source_folder">The source directory could not be read. Aborting.</string>
@@ -54,4 +54,5 @@
 	<string name="error_permissions_cannot_write_parent_dir">You don\'t have write permissions to this directory.</string>
 	<string name="error_permissions_cannot_rename_file">You don\'t have permissions to rename this file.</string>
 	<string name="dialog_prompt_rename_title">Choose a new name :</string>
+	<string name="error_activity_not_found">Error: No application found for this file.</string>
 </resources>
