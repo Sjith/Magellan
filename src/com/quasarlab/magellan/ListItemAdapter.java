@@ -46,6 +46,11 @@ public class ListItemAdapter extends BaseAdapter
 		return arg0;
 	}
 
+	public List<MagellanFile> items()
+	{
+		return m_items;
+	}
+	
 	@Override
 	public View getView(int arg0, View arg1, ViewGroup arg2) 
 	{
@@ -64,8 +69,13 @@ public class ListItemAdapter extends BaseAdapter
 		
 		it.setDescr(String.format(m_context.getResources().getString(R.string.mainactivity_file_description), MainActivity.convert(f.length(), m_context)));
 		
-		int drawable_id = f.isDirectory() ? R.drawable.folder : R.drawable.file;
-		it.setIcon(m_context.getResources().getDrawable(drawable_id));
+		if(f.icon() != null)
+			it.setIcon(f.icon());
+		else
+		{
+			int drawable_id = f.isDirectory() ? R.drawable.folder : R.drawable.file;
+			it.setIcon(m_context.getResources().getDrawable(drawable_id));
+		}
 		
 		return it;
 	}

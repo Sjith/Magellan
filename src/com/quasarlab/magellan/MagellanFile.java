@@ -2,10 +2,13 @@ package com.quasarlab.magellan;
 
 import java.io.File;
 
+import android.graphics.drawable.Drawable;
 import android.webkit.MimeTypeMap;
 
 public class MagellanFile extends File
 {
+	private Drawable m_icon;
+	
 	public MagellanFile(String path) 
 	{
 		super(path);
@@ -55,6 +58,16 @@ public class MagellanFile extends File
 			return type;
 		
 		return "*/*";
+	}
+	
+	public Drawable icon()
+	{
+		return m_icon; 
+	}
+	
+	public void setIcon(Drawable icon)
+	{
+		m_icon = icon;
 	}
 	
 }

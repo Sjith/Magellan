@@ -26,6 +26,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -177,6 +178,8 @@ public class MainActivity extends Activity
 			ad.addItem(f);
 		}		
 
+		AsyncThumbnailLoadOperation op = new AsyncThumbnailLoadOperation(this);
+		op.execute(ad.items());
 		m_listView.setAdapter(ad);
 	}
 
@@ -273,6 +276,12 @@ public class MainActivity extends Activity
 				}
 			}
 		});
+	}
+	
+	public void reloadFile(MagellanFile f)
+	{
+		if(m_listView.getAdapter() != null)
+			((BaseAdapter) m_listView.getAdapter()).notifyDataSetChanged();
 	}
 	
 	@SuppressWarnings("unchecked")
