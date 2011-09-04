@@ -60,7 +60,7 @@ public class ListItemAdapter extends BaseAdapter
 		it.setTitle(f.getName());
 		
 		it.setDescr( f.isDirectory() ? 
-			String.format(m_context.getResources().getString(R.string.mainactivity_folder_description), new Folder(f.getAbsolutePath()).count()) :
+			String.format(m_context.getResources().getString(R.string.mainactivity_folder_description), MainActivity.convert(new Folder(f.getAbsolutePath()).recursiveSize(), m_context)) :
 			String.format(m_context.getResources().getString(R.string.mainactivity_file_description), MainActivity.convert(f.length(), m_context)));
 		
 		if(f.icon() != null)

@@ -33,15 +33,18 @@ public class AsyncThumbnailLoadOperation extends AsyncTask<List<MagellanFile>, M
 			options.outHeight = 0;
 			options.inSampleSize = 1;
 			
-			try 
+			if (!f.isDirectory())
 			{
-				BitmapFactory.decodeFile(f.getAbsolutePath(), options);
+				try
+				{
+					BitmapFactory.decodeFile(f.getAbsolutePath(), options);
+				}
+				catch(Exception e)
+				{
+					continue;
+				}
 			}
-			catch(Exception e)
-			{
-				continue;
-			}
-			
+
 			if(options.outWidth > 0 && options.outHeight > 0)
 			{
 				int factor_w = (options.outWidth + 47) / 48;
