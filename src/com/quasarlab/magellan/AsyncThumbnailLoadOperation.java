@@ -28,48 +28,51 @@ public class AsyncThumbnailLoadOperation extends AsyncTask<List<MagellanFile>, M
 		{
 			f = lst.get(i);
 			
-			options.inJustDecodeBounds = true;
-			options.outWidth = 0;
-			options.outHeight = 0;
-			options.inSampleSize = 1;
-			
-			try 
+			if (!f.isDirectory())
 			{
-				BitmapFactory.decodeFile(f.getAbsolutePath(), options);
-			}
-			catch(Exception e)
-			{
-				continue;
-			}
-			
-			if(options.outWidth > 0 && options.outHeight > 0)
-			{
-				int factor_w = (options.outWidth + 47) / 48;
-				int factor_h = (options.outHeight + 47) / 48;
+				options.inJustDecodeBounds = true;
+				options.outWidth = 0;
+				options.outHeight = 0;
+				options.inSampleSize = 1;
 				
-				int factor = Math.max(factor_w, factor_h);
-				factor = (factor > 1) ? factor : 1;
+				try
+				{
+					BitmapFactory.decodeFile(f.getAbsolutePath(), options);
+				}
+				catch(Exception e)
+				{
+					continue;
+				}
 				
-                if (factor > 1) 
-                {
-                    if ((factor & (factor-1)) != 0) 
-                    {
-                            while ((factor & (factor-1)) != 0)
-                                    factor &= factor-1;
-                            
-                            factor <<= 1;
-                    }
-                }
-                
-                options.inSampleSize = factor;
-                options.inJustDecodeBounds = false;
-                
-                b = BitmapFactory.decodeFile(f.getAbsolutePath(), options);
-                if(b != null)
-                {
-                	f.setIcon(new BitmapDrawable(m_context.getResources(), b));
-                	publishProgress(f);
-                }
+				if(options.outWidth > 0 && options.outHeight > 0)
+				{
+					int factor_w = (options.outWidth + 47) / 48;
+					int factor_h = (options.outHeight + 47) / 48;
+					
+					int factor = Math.max(factor_w, factor_h);
+					factor = (factor > 1) ? factor : 1;
+					
+	                if (factor > 1) 
+	                {
+	                    if ((factor & (factor-1)) != 0) 
+	                    {
+	                            while ((factor & (factor-1)) != 0)
+	                                    factor &= factor-1;
+	                            
+	                            factor <<= 1;
+	                    }
+	                }
+	                
+	                options.inSampleSize = factor;
+	                options.inJustDecodeBounds = false;
+	                
+	                b = BitmapFactory.decodeFile(f.getAbsolutePath(), options);
+	                if(b != null)
+	                {
+	                	f.setIcon(new BitmapDrawable(m_context.getResources(), b));
+	                	publishProgress(f);
+	                }
+				}
 			}
 		}		
 		return null;
