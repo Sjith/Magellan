@@ -28,19 +28,16 @@ public class ListItemAdapter extends BaseAdapter
 		m_items = list;
 	}
 	
-	@Override
 	public int getCount() 
 	{
 		return m_items.size();
 	}
 
-	@Override
 	public Object getItem(int arg0) 
 	{
 		return m_items.get(arg0);
 	}
 
-	@Override
 	public long getItemId(int arg0) 
 	{
 		return arg0;
@@ -51,7 +48,6 @@ public class ListItemAdapter extends BaseAdapter
 		return m_items;
 	}
 	
-	@Override
 	public View getView(int arg0, View arg1, ViewGroup arg2) 
 	{
 		ListItem it;
