@@ -7,6 +7,7 @@
     <string name="mainactivity_context_delete">Delete</string>
     <string name="mainactivity_context_rename">Rename</string>
     <string name="mainactivity_context_details">Details</string>
+    <string name="mainactivity_context_wall">Set as wallaper</string>
     <string name="mainactivity_menu_exit">Exit</string>
 	<string name="mainactivity_menu_paste">Paste</string>
     <string name="mainactivity_menu_create">New...</string>
@@ -38,7 +39,7 @@
 	<string name="error_dialog_cancel">Cancel</string>
 	<string name="error_no_permissions_delete">You don\'t have permissions to delete this %1$s. It may be a system %1$s.</string>
 	<string name="error_dialog_title">Error</string>
-	<string name="mainactivity_dialog_progress_getting_details">Getting details...</string>
+	<string name="mainactivity_dialog_progress_getting_details">Getting details... </string>
 	<string name="mainactivity_dialog_details_info">File path: %1$s\nFile size: %2$s\nItems count: %3$s\nMime type: %4$s\n</string>
 	<string name="mainactivity_dialog_details_ok">Ok</string>
 	<string name="copyoperation_copying">Copying elements...</string>

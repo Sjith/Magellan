@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:id="@+id/mainactivity_filecontext_share"
+		android:title="@string/mainactivity_context_share" />
+	<item android:id="@+id/mainactivity_imagecontext_wall"
+		android:title="@string/mainactivity_context_wall" />
+    <item android:id="@+id/mainactivity_filecontext_copy"
+        android:title="@string/mainactivity_context_copy" />
+    <item android:id="@+id/mainactivity_filecontext_delete"
+        android:title="@string/mainactivity_context_delete" />
+    <item android:id="@+id/mainactivity_filecontext_rename"
+        android:title="@string/mainactivity_context_rename" />
+    <item android:id="@+id/mainactivity_filecontext_details"
+        android:title="@string/mainactivity_context_details" />
+</menu>

@@ -15,6 +15,7 @@ import com.quasarlab.magellan.MagellanFile;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.WallpaperManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.MenuInflater;
@@ -39,7 +40,10 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.service.wallpaper.*;
 
 public class MainActivity extends Activity 
 {
@@ -301,6 +305,8 @@ public class MainActivity extends Activity
 		/* use the appropriate menu : simple files have a share action */
 		if(clickedFile.isDirectory())
 			inflater.inflate(R.menu.context, menu);
+		else if(clickedFile.mimeType().startsWith("image/"))
+			inflater.inflate(R.menu.imagecontext, menu);
 		else
 			inflater.inflate(R.menu.filecontext, menu);
 	}
@@ -563,6 +569,9 @@ public class MainActivity extends Activity
 	    	});
 	    	adb.show();
 	    	
+			return true;
+		case R.id.mainactivity_imagecontext_wall:
+			// TODO
 			return true;
 		default:
 			return super.onContextItemSelected(item);

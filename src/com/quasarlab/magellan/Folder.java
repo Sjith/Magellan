@@ -21,6 +21,11 @@ public class Folder extends File
 			for(int i = 0; i < all.length; i++)
 			{
 				String name = all[i];
+				
+				// don't show hidden files by default
+				if(name.startsWith("."))
+					continue;
+				
 				File child = new File(this.getAbsolutePath() + "/" + all[i]);
 				if((child.isDirectory() && folders) || (!child.isDirectory() && !folders))
 					ret.add(name);
